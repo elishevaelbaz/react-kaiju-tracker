@@ -17,7 +17,27 @@ export const fetchKaijus = () => fetch(kaijusURL)
 .catch(catchError)
 
 // TODO: define a few more kaiju fetches
+// POST /kaijus
+export const postKaiju = (bodyData) => fetch(kaijusURL, {
+  method: "POST",
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(bodyData)
+})
+.then(parseData)
+.catch(catchError)
 
+// PATCH /kaijus/:id
+export const patchKaiju = (id, bodyData) => fetch(`${kaijusURL}/${id}`, {
+  method: "PATCH",
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(bodyData)
+})
+.then(parseData)
+.catch(catchError)
 //////////////////////////////////////////////////////
 
 // Fetches for sightings, will return a promise

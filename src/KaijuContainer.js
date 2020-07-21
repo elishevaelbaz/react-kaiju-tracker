@@ -11,18 +11,61 @@ import * as requests from './requests'
 class KaijuContainer extends React.Component {
 
   state = {
-    kaijus: []
+    kaijus: [],
+  }
+
+  componentDidMount(){
+    requests.fetchKaijus()
+    .then(kaijus => this.setState({kaijus}))
+  }
+
+  addKaiju = (bodyData) => {
+    requests.postKaiju(bodyData)
+    .then(newKaiju => {
+      this.setState({
+        kaijus: [...this.state.kaijus, newKaiju]
+      })
+    })
+  }
+
+  editKaiju = (id, bodyData) => {
+    requests.patchKaiju(id, bodyData)
+    .then(updatedKaiju => {
+      const updatedKaijus = this.state.kaijus.map(kaiju => {
+        if (kaiju.id === updatedKaiju.id){
+          return updatedKaiju
+        }
+        else{
+          return kaiju
+        }
+      })
+      this.setState({
+        kaijus: updatedKaijus
+      })
+    })
+  }
+
+  renderCards(){
+    
+    return this.state.kaijus.map(kaiju => {
+      return <KaijuCard key={kaiju.id} id={kaiju.id} 
+        name={kaiju.name}
+        image={kaiju.image}
+        power={kaiju.power}
+        handleEdit={this.editKaiju}
+      />
+    })
   }
 
   render() {
     return (
       <>
 
-        <CreateKaijuForm />
+        <CreateKaijuForm handleSubmit={this.addKaiju}/>
 
         <div id='kaiju-container'>
 
-          {/* Kaiju cards should go in here! */}
+          {this.renderCards()}
 
         </div>
 
